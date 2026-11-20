@@ -1,0 +1,10 @@
+{
+  "start": "2021-11-20",
+  "end": "2026-11-20",
+  "indices": ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY", "NIFTYNXT50", "SENSEX"],
+  "first_signal_bar": "09:30",
+  "last_entry_time": "14:55",
+  "per_trade_capital": 25000,
+  "round_trip_cost_bps": 12,
+  "max_trades_per_symbol_day": 99
+}
