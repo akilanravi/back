@@ -1,1 +1,39 @@
-
+name: Single CE PE Strategy - 5 Year 5min
+on:
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: 'Optional comma-separated symbols; leave blank for ALL F&O stocks + mapped indices'
+        required: false
+        default: ''
+        type: string
+      max_symbols:
+        description: 'Optional test cap; 0 = all'
+        required: false
+        default: '0'
+        type: string
+permissions:
+  contents: read
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m unittest -v test_backtest
+      - name: Backtest five years using Dhan
+        env:
+          DHAN_ACCESS_TOKEN: ${{ secrets.DHAN_ACCESS_TOKEN }}
+        run: python backtest.py --symbols '${{ inputs.symbols }}' --max-symbols '${{ inputs.max_symbols }}'
+      - name: Upload reports even on partial failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backtest-results
+          path: reports/*.csv
+          retention-days: 30
